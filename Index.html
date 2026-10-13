@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FrostTuneX Full AI Agent</title>
+<style>
+:root{--bg:#0a1020;--panel:#121b31;--line:#263654;--text:#eef4ff;--muted:#a8b6d1;--blue:#72a7ff;--gold:#ffd36a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top right,#182b4d,#080d18 55%);color:var(--text);font:16px system-ui,-apple-system,sans-serif}
+header{padding:24px 18px 18px;border-bottom:1px solid var(--line)}.brand{font-weight:900;font-size:25px;letter-spacing:.3px}.brand span{color:var(--gold)}header p{margin:6px 0;color:var(--muted)}
+main{max-width:1000px;margin:auto;padding:16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}.card{background:rgba(18,27,49,.94);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 8px 25px #0002}.card h2{font-size:18px;margin:0 0 12px}.tag{display:inline-block;font-size:12px;border:1px solid #3c5279;border-radius:20px;padding:4px 8px;color:#c8d9fa;margin:0 4px 5px 0}
+label{display:block;color:var(--muted);font-size:13px;margin:10px 0 5px}input,select,textarea{width:100%;border:1px solid #344665;border-radius:10px;background:#0b1325;color:var(--text);padding:11px;font:inherit}textarea{min-height:90px;resize:vertical}button{border:0;border-radius:10px;background:var(--blue);color:#061126;font-weight:800;padding:11px 14px;margin:10px 6px 0 0;cursor:pointer}button.secondary{background:#263956;color:var(--text)}button.gold{background:var(--gold)}.out{white-space:pre-wrap;overflow-wrap:anywhere;background:#091121;border:1px solid var(--line);border-radius:10px;padding:12px;min-height:65px;color:#e3ecff}.small{font-size:12px;color:var(--muted);line-height:1.5}.status{padding:10px;border-radius:10px;background:#101f35;border:1px solid #314969;color:#d4e5ff}.footer{text-align:center;padding:24px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<header><div class="brand">❄ FrostTune<span>X</span> <small style="font-size:13px;color:#a8b6d1">AI AGENT</small></div><p>Full Creator Dashboard • by Manish</p><span class="tag">Music</span><span class="tag">Cartoon & Stories</span><span class="tag">Shorts & Reels</span><span class="tag">Social Publishing Planner</span></header>
+<main>
+<div class="status"><b>Starter dashboard:</b> यह मोबाइल-फ्रेंडली कंटेंट टूल है। अभी वास्तविक AI/API और ऑटो-पब्लिशिंग कनेक्ट नहीं हैं। अपनी API keys या passwords इस पेज में न डालें।</div>
+<div class="grid" style="margin-top:14px">
+<section class="card"><h2>🎬 Content Pack Generator</h2>
+<label>वीडियो का प्रकार</label><select id="kind"><option>Viral Shorts / Reels</option><option>AI Music Video</option><option>Cartoon Story</option><option>Hindi Kahani</option><option>Educational Video</option><option>Bhakti Video</option></select>
+<label>भाषा</label><select id="lang"><option>Hindi</option><option>Hinglish</option><option>Punjabi</option><option>Bhojpuri</option><option>English</option></select>
+<label>विषय / आइडिया</label><textarea id="topic" placeholder="जैसे: एक गरीब बच्चे की प्रेरणादायक कहानी"></textarea>
+<label>वीडियो अवधि</label><select id="duration"><option>30 seconds</option><option>60 seconds</option><option>3 minutes</option><option>5 minutes</option><option>8 minutes</option></select>
+<button onclick="generate()">Content Pack बनाएं</button><button class="secondary" onclick="copyOut()">Copy output</button>
+<div id="output" class="out" style="margin-top:10px">आपका कंटेंट यहाँ दिखाई देगा।</div></section>
+<section class="card"><h2>🖼️ Thumbnail / Cover Maker</h2>
+<label>मुख्य टेक्स्ट</label><input id="thumbTitle" value="NEW VIDEO">
+<label>छोटा टेक्स्ट</label><input id="thumbSub" value="Presented by FrostTuneX">
+<label>बैकग्राउंड रंग</label><select id="bg"><option value="#101a35">Midnight Blue</option><option value="#35142e">Purple</option><option value="#163a31">Emerald</option><option value="#3b2411">Gold Brown</option></select>
+<button onclick="drawThumb()">Preview बनाएं</button><button class="gold" onclick="downloadThumb()">PNG डाउनलोड</button>
+<canvas id="canvas" width="1280" height="720" style="width:100%;border-radius:10px;margin-top:10px;background:#101a35"></canvas>
+<p class="small">यह editable text-cover template है; AI-generated images इसमें अपने-आप नहीं जुड़तीं।</p></section>
+<section class="card"><h2>📅 Posting Planner</h2>
+<label>Platform</label><select id="platform"><option>YouTube</option><option>Instagram</option><option>Facebook</option></select>
+<label>पोस्ट का विषय</label><input id="posttopic" placeholder="वीडियो का नाम">
+<label>पोस्ट की तारीख और समय</label><input id="posttime" type="datetime-local">
+<button onclick="addPost()">Planner में जोड़ें</button><button class="secondary" onclick="exportCSV()">CSV Export</button>
+<div id="posts" class="out" style="margin-top:10px">अभी कोई पोस्ट प्लान नहीं है।</div>
+<p class="small">यह रिमाइंडर/प्लानर है, अपने-आप पोस्ट नहीं करता।</p></section>
+<section class="card"><h2>🔌 Auto-Publishing Setup</h2>
+<p>ऑटो-पब्लिशिंग जोड़ने के लिए बाद में सुरक्षित backend और official platform APIs कनेक्ट करनी होंगी।</p>
+<ul class="small"><li>YouTube: Google OAuth + YouTube Data API</li><li>Instagram/Facebook: Meta developer app, eligible professional account/Page, permissions</li><li>AI video: चुनी गई सेवा की API और usage limits</li></ul>
+<div class="status">कभी भी अपना password, access token या API secret सार्वजनिक GitHub repository में न रखें।</div></section>
+</div>
+<div class="footer">FrostTuneX AI Agent • by Manish • Starter build</div>
+</main>
+<script>
+let pack='';
+function generate(){
+ const kind=document.getElementById('kind').value, lang=document.getElementById('lang').value, topic=document.getElementById('topic').value.trim()||'अपना विषय लिखें', dur=document.getElementById('duration').value;
+ const title=topic+' | '+kind+' #Shorts';
+ const script=`[Hook – पहले 3 सेकंड]\\n${topic} — आखिर आगे क्या होगा?\\n\\n[Main content]\\nइस विषय को 3–5 छोटे दृश्यों में दिखाएँ। हर दृश्य में एक साफ़ विज़ुअल, सरल नैरेशन और दर्शक को आगे देखने की वजह रखें।\\n\\n[Ending / CTA]\\nआपकी राय क्या है? कमेंट करें और FrostTuneX को फॉलो/सब्सक्राइब करें।\\n\\nFormat: ${kind}\\nLanguage: ${lang}\\nTarget duration: ${dur}`;
+ const desc=`${topic}\\n\\nदेखिए यह नया ${kind} वीडियो, प्रस्तुत है FrostTuneX द्वारा। पसंद आए तो Like, Share और Subscribe/Follow करें।\\n\\n#FrostTuneX #${kind.replace(/[^a-zA-Z0-9]/g,'')} #Shorts`;
+ pack=`TITLE\\n${title}\\n\\nSCRIPT OUTLINE\\n${script}\\n\\nDESCRIPTION\\n${desc}\\n\\nTAGS\\nFrostTuneX, ${kind}, ${lang}, short video, viral reels, AI video\\n\\nHASHTAGS\\n#FrostTuneX #Shorts #Reels #AIVideo #${lang}`;
+ document.getElementById('output').textContent=pack;
+}
+async function copyOut(){const t=document.getElementById('output').textContent;try{await navigator.clipboard.writeText(t);alert('Copied!')}catch(e){alert('Output पर long-press करके Copy चुनें।')}}
+function drawThumb(){const c=document.getElementById('canvas'),x=c.getContext('2d');x.fillStyle=document.getElementById('bg').value;x.fillRect(0,0,1280,720);x.fillStyle='#ffd36a';x.fillRect(0,0,1280,18);x.fillRect(0,702,1280,18);x.fillStyle='#fff';x.font='bold 82px system-ui';x.textAlign='center';let t=document.getElementById('thumbTitle').value||'NEW VIDEO';if(t.length>25)t=t.slice(0,25)+'…';x.fillText(t,640,330);x.fillStyle='#dce7ff';x.font='bold 34px system-ui';x.fillText(document.getElementById('thumbSub').value||'Presented by FrostTuneX',640,405);x.fillStyle='#ffd36a';x.font='bold 26px system-ui';x.fillText('FrostTuneX • by Manish',640,640)}
+function downloadThumb(){drawThumb();let a=document.createElement('a');a.download='FrostTuneX-thumbnail.png';a.href=document.getElementById('canvas').toDataURL('image/png');a.click()}
+function getPosts(){try{return JSON.parse(localStorage.getItem('ftxposts')||'[]')}catch(e){return []}}
+function renderPosts(){let p=getPosts();document.getElementById('posts').textContent=p.length?p.map((v,i)=>`${i+1}. ${v.platform} — ${v.topic} — ${v.time||'समय तय नहीं'} [Planned]`).join('\\n'):'अभी कोई पोस्ट प्लान नहीं है।'}
+function addPost(){let topic=document.getElementById('posttopic').value.trim();if(!topic){alert('पोस्ट का विषय लिखें');return}let p=getPosts();p.push({platform:document.getElementById('platform').value,topic,time:document.getElementById('posttime').value});localStorage.setItem('ftxposts',JSON.stringify(p));document.getElementById('posttopic').value='';renderPosts()}
+function exportCSV(){let p=getPosts();let rows=[['Platform','Topic','DateTime'],...p.map(v=>[v.platform,v.topic,v.time])];let csv=rows.map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='FrostTuneX-post-plan.csv';a.click()}
+drawThumb();renderPosts();
+</script>
+</body></html>
